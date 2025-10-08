@@ -25,6 +25,9 @@ export async function POST(req: Request) {
     
     // Instantiate account using private key
     const privateKey = process.env.PRIVATE_KEY
+    if (!privateKey) {
+      return NextResponse.json({ error: 'Server configuration error', message: 'PRIVATE_KEY environment variable is not set' }, { status: 500 });
+    }
     const account = privateKeyToAccount(privateKey as Hex)
 
     // Instantiate client that can use wallet to send transactions
