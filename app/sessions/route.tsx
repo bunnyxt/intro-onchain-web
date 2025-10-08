@@ -3,15 +3,7 @@ import { createPublicClient, createWalletClient, encodeFunctionData, Hex, http }
 import { privateKeyToAccount } from 'viem/accounts'
 import { baseSepolia } from 'viem/chains';
 import { AttendanceAbi, attendanceContract } from '@/app/lib/Attendance';
-
-export function parseSession(result?: [number, number, bigint] | readonly [number, number, bigint]) {
-  if (!result) return undefined
-  return {
-    start: result[0], 
-    end: result[1], 
-    totalAttended: parseInt(result[2].toString())
-  }
-}
+import { parseSession } from '@/app/lib/utils';
 
 // Create a new session
 export async function POST(req: Request) {

@@ -52,8 +52,9 @@ export default function App() {
       ) : (
         // If sessions have been created, display list of sessions
         <ul className="w-1/4 text-center flex flex-col space-y-4">
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           {data?.sessions?.map((session: any) => (
-            <Link href={`/session/${session.sessionId}`} className="hover:underline">Session #{session.sessionId}</Link>
+            <Link key={session.sessionId} href={`/session/${session.sessionId}`} className="hover:underline">Session #{session.sessionId}</Link>
           ))}
         </ul>
       )}

@@ -19,7 +19,7 @@ import { encodeFunctionData, Hex } from 'viem';
 import { AttendanceAbi, attendanceContract } from '@/app/lib/Attendance';
 import { useAccount, useChainId, useReadContract, useSwitchChain } from 'wagmi';
 import { baseSepolia } from 'viem/chains';
-import { parseSession } from '@/app/sessions/route';
+import { parseSession } from '@/app/lib/utils';
 import { useEffect } from 'react';
 
 export default function App({ params }: {params: {sessionId: string}}) {
