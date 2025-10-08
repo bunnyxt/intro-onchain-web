@@ -23,7 +23,6 @@ export default function App() {
 
   return isLoading ? (<></>) : (
     <div className="flex flex-col items-center justify-center min-h-screen font-sans dark:bg-background dark:text-white bg-white text-black">
-      {account?.address && (
         <div className='absolute top-4 right-4'>
           <Wallet>
               <ConnectWallet>
@@ -49,7 +48,6 @@ export default function App() {
               </WalletDropdown>
           </Wallet>
       </div>
-      )}
       {!data?.sessions?.length ? (
         <div className="text-center">No sessions created. <br /> Call POST /sessions or transact directly onchain. </div>
       ) : (
