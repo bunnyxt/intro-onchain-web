@@ -23,34 +23,36 @@ import { parseSession } from '@/app/sessions/route';
 import { useEffect } from 'react';
 
 export default function App({ params }: {params: {sessionId: string}}) {
+    // state for connected wallet
     const account = useAccount()
+
+    // state for querying totalSessions
     const {data: totalSessions, isLoading} = useReadContract({
         abi: AttendanceAbi, 
         address: attendenceContract, 
         functionName: "totalSessions"
     })
+
+    // state for querying a session's data
     const {data: sessionRaw} = useReadContract({
         abi: AttendanceAbi,
         address: attendenceContract,
         functionName: "sessions",
         args: [BigInt(params.sessionId)]
     })
+
+    // state for querying if an account has attended a session
     const {data: hasAttended} = useReadContract({
         abi: AttendanceAbi, 
         address: attendenceContract, 
         functionName: "hasAttended", 
         args: [BigInt(params.sessionId), account.address as Hex]
     })
-    const attendSessionCalls = [{
-        to: attendenceContract, 
-        data: encodeFunctionData({
-            abi: AttendanceAbi, 
-            functionName: "attendSession", 
-            args: [BigInt(params.sessionId)]
-        })
-    }]
 
+    // state for wallet's currently connected chain
     const chainId = useChainId()
+
+    // Enforce that users are connected to base sepolia
     const {switchChain} = useSwitchChain()
     useEffect(() => {
         if (chainId && chainId !== baseSepolia.id) {
@@ -64,13 +66,17 @@ export default function App({ params }: {params: {sessionId: string}}) {
     return isLoading ? (
         <></>
     ) : parseInt(params.sessionId) >= (totalSessions ?? 0) ? (
+        // If session id is greater than total sessions, session does not exist
         <div className='flex flex-col text-center justify-center min-h-screen'>Session does not exist.</div>
     ) : (
+        // If session exists, display session data
         <div className="flex flex-col items-center justify-center min-h-screen font-sans dark:bg-background dark:text-white bg-white text-black">
             <div className='flex flex-col space-y-4 mb-12'>
+                {/* Show session id and total attendance */}
                 <div className='text-2xl'>Session #{params.sessionId}</div>
                 <div className='text-2xl'>Total attended: {session?.totalAttended}</div>
             </div>
+            {/* If user is not connected, display connect wallet button */}
             {!account.address ? (
                 <Wallet>
                     <ConnectWallet>
@@ -106,8 +112,16 @@ export default function App({ params }: {params: {sessionId: string}}) {
                         </Wallet>
                     </div>
                     <div className='w-1/4'>
+                    {/* If user has not attended session, display attend session button */}
                     {!hasAttended ? (
-                        <Transaction calls={attendSessionCalls}>
+                        <Transaction calls={[{
+                            to: attendenceContract, 
+                            data: encodeFunctionData({
+                                abi: AttendanceAbi, 
+                                functionName: "attendSession", 
+                                args: [BigInt(params.sessionId)]
+                            })
+                        }]}>
                             <TransactionButton text={"Attend"} />
                             <TransactionSponsor />
                             <TransactionStatus>
@@ -116,6 +130,7 @@ export default function App({ params }: {params: {sessionId: string}}) {
                             </TransactionStatus>
                         </Transaction>  
                     ) : (
+                        // If user has attended session, display message
                         <div className='text-center'>You have already attended this session.</div>
                     )}
                     </div>
