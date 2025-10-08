@@ -1,6 +1,6 @@
 import { Address } from "viem";
 
-export const attendenceContract =
+export const attendanceContract =
   "0xe4786c9C313Ea3263856233FB71b015D63252599" as Address;
 export const AttendanceAbi = [
   {
