@@ -1,8 +1,13 @@
 import { Address } from "viem";
 
 export const attendanceContract =
-  "0xe4786c9C313Ea3263856233FB71b015D63252599" as Address;
+  "0x864cdCc0A0335e37359d04712436FB5369871631" as Address;
 export const AttendanceAbi = [
+  {
+    inputs: [{ internalType: "address", name: "owner_", type: "address" }],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
   {
     inputs: [
       { internalType: "uint256", name: "sessionId", type: "uint256" },
@@ -21,10 +26,23 @@ export const AttendanceAbi = [
   },
   {
     inputs: [
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "owner", type: "address" },
+    ],
+    name: "NotOwner",
+    type: "error",
+  },
+  {
+    inputs: [
       { internalType: "uint256", name: "sessionId", type: "uint256" },
       { internalType: "uint256", name: "totalSessions", type: "uint256" },
     ],
     name: "SessionDoesNotExist",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "sessionId", type: "uint256" }],
+    name: "SessionNotActive",
     type: "error",
   },
   {
@@ -54,12 +72,6 @@ export const AttendanceAbi = [
         internalType: "uint256",
         name: "sessionId",
         type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "creator",
-        type: "address",
       },
       { indexed: false, internalType: "uint48", name: "start", type: "uint48" },
       { indexed: false, internalType: "uint48", name: "end", type: "uint48" },
@@ -91,6 +103,20 @@ export const AttendanceAbi = [
     ],
     name: "hasAttended",
     outputs: [{ internalType: "bool", name: "attended", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "sessionId", type: "uint256" }],
+    name: "isActive",
+    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
     stateMutability: "view",
     type: "function",
   },
