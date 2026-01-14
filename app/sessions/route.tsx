@@ -20,7 +20,8 @@ export async function POST(req: Request) {
     if (!privateKey) {
       return NextResponse.json({ error: 'Server configuration error', message: 'PRIVATE_KEY environment variable is not set' }, { status: 500 });
     }
-    const account = privateKeyToAccount(privateKey as Hex)
+    // Add 0x prefix for privateKey if missing
+    const account = privateKeyToAccount((privateKey.startsWith('0x') ? privateKey : `0x${privateKey}`) as Hex)
 
     // Instantiate client that can use wallet to send transactions
     const walletClient = createWalletClient({
